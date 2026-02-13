@@ -3,14 +3,12 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # Важно для создания релизов
 
     steps:
     - uses: actions/checkout@v4
@@ -27,11 +25,24 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Get Version from gradle.properties
+      id: get_version
+      run: |
+        VERSION=$(grep 'mod_version' gradle.properties | cut -d'=' -f2 | xargs)
+        echo "MOD_VERSION=$VERSION" >> $GITHUB_ENV
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
     - name: Build with Gradle
       run: ./gradlew build
-      
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+
+    - name: Create Automated Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: SakuraLand-Build
-        path: build/libs/*.jar
+        tag_name: v${{ env.MOD_VERSION }}
+        name: "SakuraLand v${{ env.MOD_VERSION }}"
+        prerelease: true
+        draft: false
+        files: build/libs/*.jar
+        body: "Автоматическая сборка версии ${{ env.MOD_VERSION }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
