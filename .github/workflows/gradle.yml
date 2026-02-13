@@ -1,0 +1,48 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Важно для создания релизов
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Get Version from gradle.properties
+      id: get_version
+      run: |
+        VERSION=$(grep 'mod_version' gradle.properties | cut -d'=' -f2 | xargs)
+        echo "MOD_VERSION=$VERSION" >> $GITHUB_ENV
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Create Automated Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ env.MOD_VERSION }}
+        name: "SakuraLand v${{ env.MOD_VERSION }}"
+        prerelease: true
+        draft: false
+        files: build/libs/*.jar
+        body: "Автоматическая сборка версии ${{ env.MOD_VERSION }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
