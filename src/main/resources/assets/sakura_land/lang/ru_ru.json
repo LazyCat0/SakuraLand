@@ -1,0 +1,22 @@
+{
+  "key.category.sakura_land.sakura_land": "Sakura land",
+
+  "item.sakura_land.pill_1": "Таблетка",
+  "item.sakura_land.pill_2": "Таблетка",
+  "item.sakura_land.pill_3": "Таблетка",
+
+  "item.sakura_land.medkit": "Аптечка",
+
+  "itemTooltip.sakura_land.pill_1.lvl": "I Уровень",
+  "itemTooltip.sakura_land.pill_1.heals": "Исцеляет 2 сердца или 4 хп.",
+
+  "itemTooltip.sakura_land.pill_2.lvl": "II Уровень",
+  "itemTooltip.sakura_land.pill_2.heals": "Исцеляет 4 сердца или 8 хп.",
+
+  "itemTooltip.sakura_land.pill_3.lvl": "III Уровень",
+  "itemTooltip.sakura_land.pill_3.heals": "Исцеляет 6 сердца или 10 хп.",
+
+  "itemTooltip.sakura_land.medkit.heals": "Исцеляет всё доступное ХП игрока.",
+
+  "itemTooltip.sakura_land.pill.shine": "Поблёскивает красным..."
+}

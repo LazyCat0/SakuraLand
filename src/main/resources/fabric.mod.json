@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "sakura_land",
+  "version": "${version}",
+  "name": "Sakura Land",
+  "description": "IDK",
+  "authors": [],
+  "contact": {},
+  "license": "GPL-3.0",
+  "icon": "assets/sakura_land/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "lazy.dev.sakuraland.DataGen"
+    ],
+    "client": [
+      "lazy.dev.sakuraland.client.SakuralandClient"
+    ],
+    "main": [
+      "lazy.dev.sakuraland.Sakuraland"
+    ]
+  },
+  "mixins": [
+    "sakuraland.mixins.json",
+    {
+      "config": "sakuraland.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
