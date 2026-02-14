@@ -36,11 +36,13 @@ jobs:
         id: changelog
         run: |
           if [ -f Changelog.md ]; then
-            echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
-            cat Changelog.md >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
+            {
+              echo 'CHANGELOG_CONTENT<<EOF'
+              cat Changelog.md
+              echo 'EOF'
+            } >> "$GITHUB_ENV"
           else
-            echo "CHANGELOG_CONTENT=Список изменений не предоставлен." >> $GITHUB_ENV
+            echo "CHANGELOG_CONTENT=Список изменений не предоставлен." >> "$GITHUB_ENV"
           fi
 
       - name: Build with Gradle
