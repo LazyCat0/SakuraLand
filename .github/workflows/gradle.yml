@@ -37,7 +37,7 @@ jobs:
         run: |
           if [ -f Changelog.md ]; then
             {
-              echo 'CHANGELOG_CONTENT<<EOF'
+              echo 'CHANGELOG_CONTENT'
               cat Changelog.md
               echo 'EOF'
             } >> "$GITHUB_ENV"
