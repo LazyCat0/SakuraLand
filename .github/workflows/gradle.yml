@@ -32,19 +32,6 @@ jobs:
           echo "MOD_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
           echo "Detected version: $CLEAN_VERSION"
 
-      - name: Read Changelog
-        id: changelog
-        run: |
-          if [ -f Changelog.md ]; then
-            {
-              echo 'CHANGELOG_CONTENT'
-              cat Changelog.md
-              echo 'EOF'
-            } >> "$GITHUB_ENV"
-          else
-            echo "CHANGELOG_CONTENT=Список изменений не предоставлен." >> "$GITHUB_ENV"
-          fi
-
       - name: Build with Gradle
         run: ./gradlew build
 
@@ -61,7 +48,7 @@ jobs:
             ** [📝] Версия мода:** `${{ env.MOD_VERSION }}` **[📝]**
             
             ### [📜] Список изменений: [📜]
-            ${{ env.CHANGELOG_CONTENT }}
+            [Список изменений](https://github.com{{ github.repository }}/blob/${{ github.sha }}/Changelog.md)
             
             # [🔧] ТЕХНИЧЕСКАЯ ИНФОРМАЦИЯ [🔧]
             **Ветка:** `${{ github.ref_name }}`
