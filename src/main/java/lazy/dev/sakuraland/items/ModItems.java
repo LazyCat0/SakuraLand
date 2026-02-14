@@ -1,6 +1,5 @@
 package lazy.dev.sakuraland.items;
 
-import lazy.dev.sakuraland.items.custom.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -20,9 +19,5 @@ public class ModItems {
 
         return item;
     }
-    public static Item PILL_1 = register("pill_1", Pill_1::new, new Item.Properties().stacksTo(16));
-    public static Item PILL_2 = register("pill_2", Pill_2::new, new Item.Properties().stacksTo(16));
-    public static Item PILL_3 = register("pill_3", Pill_3::new, new Item.Properties().stacksTo(16));
-    public static Item MEDKIT = register("medkit", Medkit::new, new Item.Properties().stacksTo(1));
     public static void init() {}
 }

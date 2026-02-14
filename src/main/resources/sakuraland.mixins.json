@@ -4,8 +4,6 @@
   "package": "lazy.dev.sakuraland.mixins",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "CancelRegenMixin",
-    "CancelFoodRegenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

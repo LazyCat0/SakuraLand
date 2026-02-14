@@ -8,41 +8,65 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Важно для создания релизов
+      contents: write
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-    - name: Get Version from gradle.properties
-      id: get_version
-      run: |
-        VERSION=$(grep 'mod_version' gradle.properties | cut -d'=' -f2 | xargs)
-        echo "MOD_VERSION=$VERSION" >> $GITHUB_ENV
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Get Project Version
+        id: get_version
+        run: |
+          CLEAN_VERSION=$(./gradlew properties --no-daemon | grep "^version:" | awk '{print $2}')
+          echo "MOD_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
+          echo "Detected version: $CLEAN_VERSION"
 
-    - name: Build with Gradle
-      run: ./gradlew build
+      - name: Read Changelog
+        id: changelog
+        run: |
+          if [ -f Changelog.md ]; then
+            echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
+            cat Changelog.md >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          else
+            echo "CHANGELOG_CONTENT=Список изменений не предоставлен." >> $GITHUB_ENV
+          fi
 
-    - name: Create Automated Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: v${{ env.MOD_VERSION }}
-        name: "SakuraLand v${{ env.MOD_VERSION }}"
-        prerelease: true
-        draft: false
-        files: build/libs/*.jar
-        body: "Автоматическая сборка версии ${{ env.MOD_VERSION }}"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Cleanup extra jars
+        run: rm -f build/libs/*-dev.jar build/libs/*-sources.jar build/libs/*-shadow.jar
+
+      - name: Create Automated Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.MOD_VERSION }}
+          name: "Sakuraland v${{ env.MOD_VERSION }}"
+          body: |
+            # [🌸] Автоматическая сборка мода для сервера SakuraLand [🌸]
+            ** [📝] Версия мода:** `${{ env.MOD_VERSION }}` **[📝]**
+            
+            ### [📜] Список изменений: [📜]
+            ${{ env.CHANGELOG_CONTENT }}
+            
+            # [🔧] ТЕХНИЧЕСКАЯ ИНФОРМАЦИЯ [🔧]
+            **Ветка:** `${{ github.ref_name }}`
+            **Коммит:** `${{ github.sha }}`
+          prerelease: true
+          draft: false
+          files: build/libs/*.jar
+          overwrite: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
